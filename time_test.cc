@@ -31,42 +31,7 @@ using namespace std;
 
 // Snabbintroduktion till Catch:
 
-TEST_CASE ( "quick introduction to catch" )
-{
-  // Initialization of objects you want to test
-  // Changes here will be visible in eah section
-  int i{};
 
-  // a section will use objects initialize above
-  SECTION ( "check default initalization of int" )
-  {
-    // A check evaluates a condition. The test passes if the result is "true".
-    // Each "CHECK" is counted as an "assertion" in program output
-    CHECK ( i == 0 );
-    
-    // Changes to an object in a section do not propagate to other sections
-    i += 1000;
-    // But we can assert the new value is correct in the section
-    CHECK ( i == 1000 );
-  }
-  
-  SECTION ( "postfix increment" )
-  {
-    // A failed test may be caused by a faulty test-case or a faulty implementation.
-    CHECK ( i++ == 1 ); // Catch me if you can**
-    CHECK ( ++i == 2 );
-    // ** Understand "me" as "the bug". Unrelated: https://www.imdb.com/title/tt0264464/
-  }
-
-  // If all assertions in all sections of a TEST_CASE pass, the TEST_CASE passes.
-}
-
-TEST_CASE ( "introduce a start brace { to match the end brace } on line 126" )
-{ // line 70-71 will replace this when you begin
-
-// KÖR TESTPROGRAMMET. Ta bort ovan två TEST_CASEs när du förstått hur det fungerar.
-
-/* ----- REMOVE THIS COMMENT WHEN YOU HAVE READ AND TRIED ABOVE -----
 TEST_CASE ("Constructors and getters")
 {
    SECTION("Default")
@@ -76,8 +41,6 @@ TEST_CASE ("Constructors and getters")
       CHECK( empty.get_minute() == 0 );
       CHECK( empty.get_second() == 0 );
    }
-*/
-/* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
 
    SECTION("Integer")
    {
@@ -99,8 +62,6 @@ TEST_CASE ("Constructors and getters")
       CHECK( t2.get_minute() == 59 );
       CHECK( t2.get_second() == 59 );
    }
-*/
-/* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
 
    SECTION("String")
    {
@@ -122,19 +83,24 @@ TEST_CASE ("Constructors and getters")
       CHECK( t2.get_minute() == 59 );
       CHECK( t2.get_second() == 59 );  
    }
-*/
 }
-/* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
+
 TEST_CASE ("is_am") 
 {
-   Time t0{"05:00:00"};
-   Time t1{"14:00:00"};
+   Time t0{"00:00:00"};
+   Time t1{"05:00:00"};
+   Time t2{"11:59:59"};
+   Time t3{"12:00:00"};
+   Time t4{"14:00:00"};
+   Time t5{"23:59:59"};
+
    CHECK       ( t0.is_am() );
-   CHECK_FALSE ( t1.is_am() );
-   // Fill with extra corner cases!
+   CHECK       ( t1.is_am() );
+   CHECK       ( t2.is_am() );
+   CHECK_FALSE ( t3.is_am() );
+   CHECK_FALSE ( t4.is_am() );
+   CHECK_FALSE ( t5.is_am() );
 }
-*/
-/* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
 
 TEST_CASE ("to_string")
 {
@@ -143,10 +109,20 @@ TEST_CASE ("to_string")
    Time t2{12, 0, 0};
    Time t3{13, 0, 0};
    Time t4{23, 59, 59};
+   Time t5{1, 1, 1};
+   Time t6{13, 9, 5};
+   Time t7{13, 10, 10};
+
    SECTION("24 hour format no argument")
    {
       CHECK( t0.to_string() == "00:00:00" );
-      // Fill with more tests!
+      CHECK( t1.to_string() == "11:59:59" );
+      CHECK( t2.to_string() == "12:00:00" );
+      CHECK( t3.to_string() == "13:00:00" );
+      CHECK( t4.to_string() == "23:59:59" );
+      CHECK( t5.to_string() == "01:01:01" );
+      CHECK( t6.to_string() == "13:09:05" );
+      CHECK( t7.to_string() == "13:10:10" );
    }
    
    SECTION("24 hour format with argument")
@@ -162,4 +138,4 @@ TEST_CASE ("to_string")
 
 // Fill with more tests of other functions and operators!
 
-*/
+
