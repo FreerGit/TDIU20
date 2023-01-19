@@ -1,7 +1,7 @@
 #include <string>
 
-#ifndef H_Time
-#define H_Time
+#ifndef Time_H
+#define Time_H
 
 class Time {
 public:
@@ -9,11 +9,25 @@ public:
     Time(int hour, int minute, int second);
     Time(std::string time);
 
-    int get_hour();
-    int get_minute();
-    int get_second();
-    bool is_am();
-    std::string to_string(); 
+    Time operator +(int const& rhs);
+    Time operator -(int const& rhs);
+    Time operator ++(int);
+    Time& operator ++();
+    Time operator --(int);
+    Time& operator --();
+
+    bool operator >(Time const& rhs);
+    bool operator <(Time const& rhs);
+    bool operator ==(Time const& rhs);
+    bool operator !=(Time const& rhs);
+    bool operator <=(Time const& rhs);
+    bool operator >=(Time const& rhs);
+
+    int get_hour() const;
+    int get_minute() const;
+    int get_second() const;
+    bool is_am() const;
+    std::string to_string(bool const format = false) const;
 
 private:
     void check_clock_bounds();
