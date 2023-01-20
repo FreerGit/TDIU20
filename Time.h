@@ -16,12 +16,12 @@ public:
     Time operator --(int);
     Time& operator --();
 
-    bool operator >(Time const& rhs);
-    bool operator <(Time const& rhs);
-    bool operator ==(Time const& rhs);
-    bool operator !=(Time const& rhs);
-    bool operator <=(Time const& rhs);
-    bool operator >=(Time const& rhs);
+    bool operator >(Time const& rhs) const;
+    bool operator <(Time const& rhs) const;
+    bool operator ==(Time const& rhs) const;
+    bool operator !=(Time const& rhs) const;
+    bool operator <=(Time const& rhs) const;
+    bool operator >=(Time const& rhs) const;
 
     int get_hour() const;
     int get_minute() const;
@@ -30,10 +30,12 @@ public:
     std::string to_string(bool const format = false) const;
 
 private:
-    void check_clock_bounds();
     int hour;
     int minute;
     int second;
 };
+
+std::ostream& operator<<(std::ostream &os, Time const &ti);
+std::istream& operator>>(std::istream &is, Time &ti);
 
 #endif

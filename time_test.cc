@@ -1,5 +1,7 @@
 #include "catch.hpp"
 #include "Time.h"
+#include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -227,7 +229,130 @@ TEST_CASE ("CPP standard operators") {
       CHECK( (--t0).to_string() == "23:59:59");
       CHECK( t0.to_string() == "23:59:59");
    }
+
+   SECTION("<") {
+      Time t0{};
+      Time t1{12,0,0};
+   
+      CHECK       ( (t0 < t1));
+      CHECK_FALSE ( (t1 < t0) );
+      CHECK_FALSE ( (t0 < t0) );
+   }
+
+   SECTION("==") {
+      Time t0{};
+      Time t1{12,0,0};
+
+      CHECK       ( (t0 == t0));
+      CHECK_FALSE ( (t1 == t0));
+      CHECK_FALSE ( (t0 == t1));
+   }
+
+   SECTION(">") {
+      Time t0{};
+      Time t1{12,0,0};
+   
+      CHECK       ( (t1 > t0));
+      CHECK_FALSE ( (t0 > t1) );
+      CHECK_FALSE ( (t0 > t0) );
+   }
+
+   SECTION("!=") {
+      Time t0{};
+      Time t1{12,0,0};
+
+      CHECK       ( (t0 != t1));
+      CHECK_FALSE ( (t0 != t0));
+   }
+
+   SECTION("<=") {
+      Time t0{};
+      Time t1{12,0,0};
+
+      CHECK       ( (t0 <= t0));
+      CHECK       ( (t0 <= t1));
+      CHECK_FALSE ( (t1 <= t0));
+   }
+
+   SECTION(">=") {
+      Time t0{};
+      Time t1{12,0,0};
+
+      CHECK       ( (t0 >= t0));
+      CHECK       ( (t1 >= t0));
+      CHECK_FALSE ( (t0 >= t1));
+   }
 }
+
+TEST_CASE("IO") {
+   SECTION("<< output") {
+      {
+         std::stringstream ss;
+         ss << Time{0,0,0};
+         CHECK(ss.str() == "00:00:00");
+      }
+
+      {
+         std::stringstream ss;
+         ss << Time{};
+         CHECK(ss.str() == "00:00:00");
+      }
+
+      {
+         std::stringstream ss;
+         ss << Time{12,59,59};
+         CHECK(ss.str() == "12:59:59");
+      }
+
+      {
+         std::stringstream ss;
+         ss << Time{13,0,0};
+         CHECK(ss.str() == "13:00:00");
+      }
+
+      {
+         std::stringstream ss;
+         ss << Time{13,0,0} << "text";
+         CHECK(ss.str() == "13:00:00text");
+      }
+   }
+
+   SECTION(">> input") {
+      {
+         std::string s{"00:00:00"};
+         std::stringstream ss{s};
+         Time t{};
+         ss >> t;
+         CHECK(t == Time{});
+      }
+
+      {
+         std::string s{"12:00:00"};
+         std::stringstream ss{s};
+         Time t{};
+         ss >> t;
+         CHECK(t == Time{12,0,0});
+      }
+
+      {
+         std::string s{"23:59:21"};
+         std::stringstream ss{s};
+         Time t{};
+         ss >> t;
+         CHECK(t == Time{23,59,21});
+      }
+
+      {
+         std::string s{"50:00:00"};
+         std::stringstream ss{s};
+         Time t{};
+         ss >> t;
+         CHECK(ss.failbit);
+         CHECK(t == Time{}); // default;
+      }
+   }
+}
+
 
 // Fill with more tests of other functions and operators!
 

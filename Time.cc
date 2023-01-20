@@ -1,25 +1,26 @@
 #include "Time.h"
 #include <stdexcept>
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
 
-void Time::check_clock_bounds() {
-    if (this->hour > 23 || this->hour < 0) {
+void check_clock_bounds(Time const* t) {
+    if (t->get_hour() > 23 || t->get_hour() < 0) {
         throw logic_error{"An hour has to be in the range 0-24 (inclusive)"};
     } 
-    if (this->minute > 59 || this->minute < 0 ) {
+    if (t->get_minute() > 59 || t->get_minute() < 0 ) {
         throw logic_error{"An minute has to be in the range 0-59 (inclusive)"};
     }
 
-    if (this->second > 59 || this->second < 0) {
+    if (t->get_second() > 59 || t->get_second() < 0) {
         throw logic_error{"An hour has to be in the range 0-59 (inclusive)"};
     }
 }
 
 Time::Time(int hour, int minute, int second) : hour{hour}, minute{minute}, second{second} {
-    this->check_clock_bounds();
+    check_clock_bounds(this);
 }
 
 Time::Time(string time) : hour(), minute(), second() {
@@ -29,7 +30,7 @@ Time::Time(string time) : hour(), minute(), second() {
     is >> this->minute;
     is.ignore(1);
     is >> this->second;
-    this->check_clock_bounds();
+    check_clock_bounds(this);
 }
 
 
@@ -46,7 +47,7 @@ int Time::get_second() const {
 }
 
 bool Time::is_am() const {
-    return (this->hour < 12);
+    return (this->get_hour() < 12);
 }
 
 
@@ -56,7 +57,7 @@ string digit_helper(int time_t) {
 
 string Time::to_string(bool const format) const {
     string time_s {};
-    int hour_temp{this->hour};
+    int hour_temp{this->get_hour()};
 
     // Maybe this if statement should  be nested or broken up, altough I think it's clear enough.    
     if(format && !this->is_am() && hour_temp != 12) {
@@ -67,9 +68,9 @@ string Time::to_string(bool const format) const {
 
     time_s += digit_helper(hour_temp);
     time_s += ':';
-    time_s += digit_helper(this->minute);
+    time_s += digit_helper(this->get_minute());
     time_s += ':';
-    time_s += digit_helper(this->second);
+    time_s += digit_helper(this->get_second());
 
     if(format && this->is_am()) {
         time_s += "am";
@@ -154,4 +155,58 @@ Time& Time::operator--() {
     return *this;
 }
 
+//note I did not write out this explicitly, too long.
+bool Time::operator<(Time const& rhs) const {
+    return (get_hour() < rhs.get_hour())
 
+        || (get_hour() == rhs.get_hour() 
+            && get_minute() < rhs.get_minute()) 
+    
+        || (get_hour()  == rhs.get_hour() 
+            && get_minute() == rhs.get_minute() 
+                && get_second() < rhs.get_second());
+
+}
+
+bool Time::operator==(Time const& rhs) const {
+    return (get_hour() == rhs.get_hour() 
+        && get_minute() == rhs.get_minute() 
+            && get_second() == rhs.get_second());
+}
+
+bool Time::operator>(Time const& rhs) const {
+    return (rhs < *this);
+}
+
+bool Time::operator!=(Time const& rhs) const {
+    return !(*this == rhs);
+}
+
+bool Time::operator<=(Time const& rhs) const {
+    return (*this < rhs) || (*this == rhs);
+}
+
+bool Time::operator>=(Time const& rhs) const {
+    return (*this > rhs) || (*this == rhs);
+}
+
+std::ostream& operator<<(std::ostream &os, Time const &t)
+{
+    os << t.to_string();
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Time& t)
+{
+    char c;
+    int hour, minute, second;
+
+    is >> hour >> c >> minute >> c >> second;
+
+    try{
+        t = Time{hour,minute,second};
+    } catch(std::exception& err) {
+        is.setstate(ios_base::failbit);
+    }
+    return is;
+}
