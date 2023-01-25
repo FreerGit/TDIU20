@@ -5,7 +5,7 @@ class Node {
 private:
     int data;
 public:
-    Node(int num);
+    Node(int const& num);
 
     int get_data() const;
     Node* next;
