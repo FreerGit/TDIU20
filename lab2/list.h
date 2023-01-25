@@ -13,6 +13,7 @@ public:
     List(std::initializer_list<int>); 
 
     void insert(int const num);
+    void remove(int const index);
     std::optional<int> get(int const index);
 
     Node* get_first() const;

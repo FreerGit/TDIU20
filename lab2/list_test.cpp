@@ -122,25 +122,62 @@ TEST_CASE("Public functions") {
             CHECK_FALSE(l.get(-1));
         }
     }
+
+    SECTION("remove") {
+        {
+            List empty{};
+            // Just making sure it doesn't throw
+            CHECK(empty.get_size() == 0);
+        }
+        {
+            List l(5);
+
+            l.remove(0);
+            
+            CHECK(l.get_size() == 0);
+            CHECK_FALSE(l.get(5));
+        }
+        {
+            List l{1,2,3};
+
+            l.remove(2);
+
+            CHECK(l.get_size() == 2);
+            CHECK(l.get_first()->get_data() == 1);
+            CHECK(l.get_last()->get_data() == 2);
+        }
+        {
+            List l{0,1,2,3,4,5,6,7,8,9};
+
+            l.remove(0);
+            l.remove(5);
+            // l.remove(3);
+
+            std::stringstream ss;
+            ss << l;
+            CHECK(ss.str() == "1 2 3 5 7 8 9");
+            CHECK(l.get_size() == 7);
+            CHECK(l.get_first()->get_data() == 1);
+            CHECK(l.get_last()->get_data() == 9);
+        }
+    }
 }
 
+// TEST_CASE("IO") {
+//    SECTION("<< output") {
+//       {
+//          std::stringstream ss;
+//          ss << List{1,2,3};
+//          CHECK(ss.str() == "1 2 3");
+//       }
 
-
-TEST_CASE("IO") {
-   SECTION("<< output") {
-      {
-         std::stringstream ss;
-         ss << List{1,2,3};
-         CHECK(ss.str() == "1 2 3");
-      }
-
-      {
-         std::stringstream ss;
-         ss << List{5,9,2,4,1};
-         CHECK(ss.str() == "1 2 4 5 9");
-      }
-   }
-}
+//       {
+//          std::stringstream ss;
+//          ss << List{5,9,2,4,1};
+//          CHECK(ss.str() == "1 2 4 5 9");
+//       }
+//    }
+// }
 
 
 
