@@ -7,14 +7,19 @@
 
 class List {
 public:
-    List(); 
-    // this could also be a recursive constructor.
-    List(std::initializer_list<int> const& list); 
+    List(); //empty
+    List(std::initializer_list<int> const& list); // n
+    List(List &&l); // Move
+    List(List const& l); // Copy
+    ~List(); //destructor
+
+    List &operator=(List &&l); // Move assignment
+    List &operator=(List const &l); // Copy assignment
 
     void insert(int const& num);
     void remove(int const& index);
     std::optional<int> get(int const& index);
-
+    void clear();
     bool is_empty() const;
 
     Node* get_first() const;

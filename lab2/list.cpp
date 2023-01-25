@@ -4,10 +4,7 @@
 
 using namespace std;
 
-List::List() : first(), last(), size{0} {
-    first = nullptr;
-    last = nullptr;
-}
+List::List() : first{nullptr}, last{nullptr}, size{0} {}
 
 List::List(initializer_list<int> const& l) : first(), last(), size() {
     if(l.size() == 0) {
@@ -17,6 +14,42 @@ List::List(initializer_list<int> const& l) : first(), last(), size() {
             this->insert(num);
         }
     }
+}
+
+List::List(List &&l) : List() {
+    swap(l.first, this->first);
+    swap(l.last, this->last);
+}
+
+List::List(List const& l) : List() {
+    Node* node = l.get_first();
+    while(node) {
+        this->insert(node->get_data());
+        node = node->next;
+    }
+}
+
+List& List::operator=(List const &l)
+{   
+    clear();
+    Node* node = l.get_first();
+    while(node) {
+        this->insert(node->get_data());
+        node = node->next;
+    }
+    return *this;
+}
+
+List& List::operator=(List &&l)
+{
+    swap(l.first, this->first);
+    swap(l.last, this->last);
+    return *this;
+}
+
+
+List::~List() {
+    clear();
 }
 
 Node* List::get_first() const {
@@ -29,6 +62,16 @@ Node* List::get_last() const {
 
 int List::get_size() const {
     return this->size;
+}
+
+void List::clear() {
+    Node* curr = this->first;
+    while(curr) {
+        curr = curr->next;
+        delete this->first;
+        this->first = curr;
+    }
+    this->last = nullptr;
 }
 
 bool List::is_empty() const {
@@ -70,7 +113,7 @@ void List::insert(int const& num) {
         curr->next = new_node;
         new_node->prev = curr;
     }
-    ++this->size;
+    this->size++;
 }
 
 void List::remove(int const& index) {
@@ -83,8 +126,8 @@ void List::remove(int const& index) {
         free(curr);
     } else {
 
-        Node* curr = this->last;
-        Node* prev = this->last;
+        Node* curr = this->first;
+        Node* prev = this->first;
         int step{0};
 
         while (step != index)
@@ -134,14 +177,11 @@ std::ostream& operator<<(std::ostream &os, List const &list)
 {
     Node* temp{list.get_first()};
     while(temp) {
-        // cout << temp << " data-> " << temp->get_data() << " next-> " << temp->next << " prev-> " << temp->prev << endl;
-        
         os << temp->get_data();
         temp = temp->next;
         if(temp) {
             os << " ";
         }
     } 
-    os << list.get_first()<< " " << list.get_last();
     return os;
 }

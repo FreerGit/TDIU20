@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "list.h"
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -23,6 +24,31 @@ TEST_CASE ("Constructors") {
         CHECK(mult.get_last()->get_data() == 6);
         CHECK(mult.get_first()->next->next->get_data() == 3);
         CHECK(mult.get_size() == 6);
+    }
+
+    SECTION("Move") {
+        stringstream ss;
+        List l1{1,2,3};
+        List l2{move(l1)};
+
+        ss << l2;
+
+        CHECK(l1.is_empty());
+        CHECK(ss.str() == "1 2 3");
+
+    }
+
+    SECTION("Copy") {
+        stringstream ss1;
+        stringstream ss2;
+        List l1{1,2,3};
+        List l2 = l1;
+
+        ss1 << l1;
+        ss2 << l2;
+        
+        CHECK(ss1.str() == "1 2 3");
+        CHECK(ss2.str() == "1 2 3");
     }
 }
 
@@ -53,6 +79,14 @@ TEST_CASE("Public functions") {
         List empty{};
 
         CHECK(empty.is_empty());
+    }
+
+    SECTION("clear") {
+        List n{1,2,3,4,5,6,7,8,9,5,4,3,4,2,1,5,3,};
+
+        n.clear();
+
+        CHECK(n.is_empty());
     }
 
     SECTION("insert") {
@@ -131,11 +165,6 @@ TEST_CASE("Public functions") {
 
     SECTION("remove") {
         {
-            List empty{};
-            // Just making sure it doesn't throw
-            CHECK(empty.get_size() == 0);
-        }
-        {
             List l{5};
 
             l.remove(0);
@@ -153,13 +182,13 @@ TEST_CASE("Public functions") {
             CHECK(l.get_last()->get_data() == 2);
         }
         {
+            stringstream ss;
             List l{0,1,2,3,4,5,6,7,8,9};
 
             l.remove(0);
             l.remove(5);
-            // l.remove(3);
+            l.remove(3);
 
-            std::stringstream ss;
             ss << l;
             CHECK(ss.str() == "1 2 3 5 7 8 9");
             CHECK(l.get_size() == 7);
@@ -169,21 +198,60 @@ TEST_CASE("Public functions") {
     }
 }
 
-// TEST_CASE("IO") {
-//    SECTION("<< output") {
-//       {
-//          std::stringstream ss;
-//          ss << List{1,2,3};
-//          CHECK(ss.str() == "1 2 3");
-//       }
+TEST_CASE("Operators") {
+    SECTION("Move") {
+        stringstream ss1;
+        stringstream ss2;
+        List l1{1,2,3};
+        List l2{4,5,6};
 
-//       {
-//          std::stringstream ss;
-//          ss << List{5,9,2,4,1};
-//          CHECK(ss.str() == "1 2 4 5 9");
-//       }
-//    }
-// }
+        l1 = move(l2);
+
+        ss1 << l1;
+        ss2 << l2;
+
+        CHECK(ss1.str() == "4 5 6");
+        CHECK(ss2.str() == "1 2 3");
+    }
+    
+    SECTION("Copy") {
+        stringstream ss1;
+        stringstream ss2;
+        List l1{1,2,3};
+        List l2{4,5,6};
+
+        l1 = l2;
+        ss1 << l1;
+        
+        CHECK(ss1.str() == "4 5 6");
+
+        // no matter what I do to l2, shouldn't change l1.
+
+        l2.remove(0);
+        l2.remove(1);
+
+        ss2 << l1;
+
+        CHECK(ss1.str() == "4 5 6");
+        CHECK(l2.get_size() == 1);
+    }
+}
+
+TEST_CASE("IO") {
+    SECTION("<< output") {
+        {
+            stringstream ss;
+            ss << List{1,2,3};
+            CHECK(ss.str() == "1 2 3");
+        }
+
+        {
+            stringstream ss;
+            ss << List{5,9,2,4,1};
+            CHECK(ss.str() == "1 2 4 5 9");
+        }
+    }
+}
 
 
 
