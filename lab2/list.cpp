@@ -9,11 +9,7 @@ List::List() : first(), last(), size{0} {
     last = nullptr;
 }
 
-List::List(int num) : first(), last(), size() {
-    this->insert(num);
-}
-
-List::List(initializer_list<int> l) : first(), last(), size() {
+List::List(initializer_list<int> const& l) : first(), last(), size() {
     if(l.size() == 0) {
         List();
     } else {
@@ -35,39 +31,50 @@ int List::get_size() const {
     return this->size;
 }
 
-void List::insert(int const num) {
-    if(!this->first) {
-        this->first = new Node(num);
-        this->last = first;
-    } else if (this->first->get_data() >= num) {
-        Node* node = new Node(num);
-        node->next = this->first;
-        this->first = node;
-    } else {
-        if(this->last && this->last->get_data() <= num) {
-            this->last->next = new Node(num);
-            this->last = this->last->next;
-        } else {
-            Node* temp{this->first};
-            Node* node = new Node(num);
-            while(temp->next && temp->next->get_data() < node->get_data()) {
-               temp = temp->next;
-            }
-
-            node->next = temp->next;
-            if(temp->next) {
-                node->next->prev = node;
-            }
-            
-            temp->next = node;
-            node->prev = temp;
-        }
-    }
-    this->size++;
+bool List::is_empty() const {
+    return (!this->first && !this->last);
 }
 
-optional<int> List::get(int const index) {
-    if(!this->first) {
+void List::insert(int const& num) {
+    Node* curr;
+    Node* new_node = new Node(num);
+  
+    if (this->is_empty()){
+        this->first = new_node;
+        this->last = this->first;
+    }
+  
+    else if (this->first->get_data() >= new_node->get_data()) {
+        new_node->next = this->first;
+        new_node->next->prev = new_node;
+        this->first = new_node;
+    }
+  
+    else {
+        curr = this->first;
+  
+        while (curr->next && 
+               curr->next->get_data() < new_node->get_data()) {
+            curr = curr->next;
+        }
+  
+        new_node->next = curr->next;
+
+        if (curr->next) {
+            new_node->next->prev = new_node;
+        }
+        else {
+            this->last = new_node;
+        }
+  
+        curr->next = new_node;
+        new_node->prev = curr;
+    }
+    ++this->size;
+}
+
+optional<int> List::get(int const& index) {
+    if(this->is_empty()) {
         return {};
     }
     if(this->size - 1 == index) {
@@ -93,6 +100,7 @@ std::ostream& operator<<(std::ostream &os, List const &list)
 {
     Node* temp{list.get_first()};
     while(temp) {
+        //cout << temp->get_data() << " " << temp->prev << " " << temp->next << endl;  
         os << temp->get_data();
         temp = temp->next;
         if(temp) {

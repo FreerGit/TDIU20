@@ -8,12 +8,14 @@
 class List {
 public:
     List(); 
-    List(int num);
     // this could also be a recursive constructor.
-    List(std::initializer_list<int>); 
+    List(std::initializer_list<int> const& list); 
 
-    void insert(int const num);
-    std::optional<int> get(int const index);
+    void insert(int const& num);
+    void remove(int const& index);
+    std::optional<int> get(int const& index);
+
+    bool is_empty() const;
 
     Node* get_first() const;
     Node* get_last() const;

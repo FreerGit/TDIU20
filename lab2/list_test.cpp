@@ -12,7 +12,7 @@ TEST_CASE ("Constructors") {
     }
 
     SECTION("Constructor with one arg") {
-        List one(5);
+        List one{5};
         CHECK(one.get_first()->get_data() == 5);
         CHECK(one.get_last()->get_data() == 5);
     }
@@ -41,12 +41,18 @@ TEST_CASE("Public functions") {
 
     SECTION("get_size") {
         List empty{};
-        List one(5);
+        List one{5};
         List many{1,2,3,3,3,3,3,3,3,3,3};
 
         CHECK(empty.get_size() == 0);
         CHECK(one.get_size() == 1);
         CHECK(many.get_size() == 11);
+    }
+
+    SECTION("is_empty") {
+        List empty{};
+
+        CHECK(empty.is_empty());
     }
 
     SECTION("insert") {
