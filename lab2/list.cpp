@@ -1,6 +1,7 @@
 #include "list.h"
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -92,7 +93,14 @@ void List::insert(int const& num) {
         new_node->next->prev = new_node;
         this->first = new_node;
     }
-  
+
+    // performance boost for push_back
+    else if (this->last->get_data() <= new_node->get_data()) {
+        new_node->prev = this->last;
+        this->last->next = new_node;
+        this->last = new_node;
+    }
+
     else {
         curr = this->first;
   
@@ -184,4 +192,14 @@ std::ostream& operator<<(std::ostream &os, List const &list)
         }
     } 
     return os;
+}
+
+
+// iterator 
+Iterator List::begin() const {
+    return Iterator(this->first);
+}
+
+Iterator List::end() const {
+    return Iterator(nullptr);
 }

@@ -253,5 +253,14 @@ TEST_CASE("IO") {
     }
 }
 
-
-
+TEST_CASE("Iterator") {
+    SECTION("Simple iteration") {
+        stringstream ss;
+        List l{2, 5, 7};
+        for ( auto it = l.begin(); it != l.end(); ++it)
+        {  
+            ss << *it;
+        }
+        CHECK(ss.str() == "257");
+    }
+}

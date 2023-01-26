@@ -1,4 +1,5 @@
 #include "node.h"
+#include "iterator.h"
 #include <initializer_list>
 #include <optional>
 
@@ -25,6 +26,10 @@ public:
     Node* get_first() const;
     Node* get_last() const;
     int get_size() const;
+
+    // iterator
+    Iterator begin() cons
+    Iterator end() const;
 
 private:
     Node* first;
