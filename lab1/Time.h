@@ -9,12 +9,13 @@ public:
     Time(int hour, int minute, int second);
     Time(std::string time);
 
-    Time operator +(int const& rhs);
-    Time operator -(int const& rhs);
+    Time operator +(int const& rhs) const;
+    Time operator -(int const& rhs) const;
     Time operator ++(int);
     Time& operator ++();
     Time operator --(int);
     Time& operator --();
+
 
     bool operator >(Time const& rhs) const;
     bool operator <(Time const& rhs) const;
@@ -30,10 +31,14 @@ public:
     std::string to_string(bool const format = false) const;
 
 private:
+    void check_clock_bounds(Time const* t) const;
+
     int hour;
     int minute;
     int second;
 };
+
+Time operator+(int const& lhs, Time const& rhs);
 
 std::ostream& operator<<(std::ostream &os, Time const &ti);
 std::istream& operator>>(std::istream &is, Time &ti);

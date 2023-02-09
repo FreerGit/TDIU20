@@ -6,7 +6,7 @@
 using namespace std;
 
 
-void check_clock_bounds(Time const* t) {
+void Time::check_clock_bounds(Time const* t) const {
     if (t->get_hour() > 23 || t->get_hour() < 0) {
         throw logic_error{"An hour has to be in the range 0-24 (inclusive)"};
     } 
@@ -25,11 +25,32 @@ Time::Time(int hour, int minute, int second) : hour{hour}, minute{minute}, secon
 
 Time::Time(string time) : hour(), minute(), second() {
     std::istringstream is( time );
-    is >> this->hour;
+    char anything_left;
+    
+    if(time.size() != 8) {
+        throw logic_error{"Faulty input string, \"hh:mm:ss\""};
+    }
+
+    if (!(is >> this->hour)) {
+        throw logic_error{"Faulty input string, no hour"};
+    }
+
     is.ignore(1);
-    is >> this->minute;
+    
+    if (!(is >> this->minute)) {
+        throw logic_error{"Faulty input string, no minute"};
+    } 
+    
     is.ignore(1);
-    is >> this->second;
+
+    if (!(is >> this->second)) {
+        throw logic_error{"Faulty input string, no second"};
+    } 
+
+    if (is >> anything_left) {
+        throw logic_error{"Faulty input string, \"hh:mm:ss\""};
+    }
+
     check_clock_bounds(this);
 }
 
@@ -81,8 +102,10 @@ string Time::to_string(bool const format) const {
     return time_s;
 }
 
-Time Time::operator+(int const& rhs) {
+Time Time::operator+(int const& rhs) const {
     Time t{*this};
+
+
     if(t.get_second() + rhs >= 60) {
         if(t.get_minute() == 59) {
             if(t.get_hour() == 23) {
@@ -101,11 +124,12 @@ Time Time::operator+(int const& rhs) {
     } else {
         t.second += rhs;
     }
+    
 
     return t;
 }
 
-Time Time::operator-(int const& rhs) {
+Time Time::operator-(int const& rhs) const {
     Time t{*this};
     if(t.get_second() - rhs < 0) {
         if(t.get_minute() == 0) {
@@ -190,14 +214,15 @@ bool Time::operator>=(Time const& rhs) const {
     return (*this > rhs) || (*this == rhs);
 }
 
-std::ostream& operator<<(std::ostream &os, Time const &t)
-{
-    os << t.to_string();
-    return os;
+Time operator+(int const& lhs, Time const& rhs) {
+    return rhs + lhs;
 }
 
-std::istream& operator>>(std::istream& is, Time& t)
-{
+std::ostream& operator<<(std::ostream &os, Time const &t) {
+    return os << t.to_string();
+}
+
+std::istream& operator>>(std::istream& is, Time& t) {
     char c;
     int hour, minute, second;
 

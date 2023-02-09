@@ -5,34 +5,35 @@
 
 using namespace std;
 
-// LÄS FÖRST HELA VÄGEN TILL RAD 65. LÄS NOGA.
+/*
 
-// I denna fil skriver ni alla testfall huvudprogrammet ska köra.
-// Huvudprogrammet finns test_main.cc så det kan kompileras för sig en gång för alla.
+// Information om komplettering:
+// Siffrorna hänvisar till rättningsprotokollet som finns på
+// kurshemsidan -> läsning -> Literatur -> "Uppgruppens bedömningsprotokoll"
+// Kompletteringen kan gälla hela filen och alla filer i labben,
+// så får ni komplettering på en sak, kan samma sak förekomma på
+// fler ställen utan att jag skrivit det.
+//
+// Komplettering lämnas in via sendlab efter senast en (1) vecka
+//
+// Har ni frågor om kompletteringen kan ni maila mig på:
+// nadim.lakrouz@liu.se
 
-// Ni ska arbeta med uppgiften enligt TDD (Test Driven Developement)
-// Snabbintroduktion till TDD:
-//  1. Lägg till ett testfall.
-//  2. Gör minsta möjliga otillräckliga stub-implementation så att testfallet kompilerar.
-//  3. Kör testprogrammet.
-//     Du ska se att testfallet detekterar otillräcklig implementation (misslyckas).
-//  4. Lägg till (minsta möjliga) korrekta implementation.
-//  5. Kör testprogrammet med alla testfall.
-//     Du ska se att alla testfall, tidigare och det nya, går igenom.
-//  6. Refaktorera (skriv om) så att koden ser bra ut
-//  7. Kör testprogrammet med alla testfall.
-//     Du ska se att alla testfall, tidigare och det nya, fortfarande går igenom.
+// Komplettering: Operatorer och funktioner som inte ändrar på objektets tillstånd ska markeras// som konstanta.
+// Komplettering: hjälpfunktioner ska deklareras som private. 
+// Komplettering: operator+ för kommutativa fallet saknas.
 
-// Catch är ett ramverk som hjälper till med all logik för att gå
-// igenom alla testfall, köra dem, visa tester som misslyckas, och
-// sammanställa resultatet.
+// Komplettering: En testfil ska pröva de funktioner som
+// ni har skapat. Det innebär att man vill pröva alla
+// möjliga fall (även specialfall). Vi vill ju vara säkra
+// på att vi har en funktion som fungerar. En bra fråga är:
+// "Övertygar detta den som rättar att er funktion
+// fungerar utan att kolla i Time.cc-filen?"
 
-// Ni ska använda catch när ni skriver testfallen.
-// Full dokumentation:
-// https://github.com/catchorg/Catch2/tree/devel/docs#reference
-
-// Snabbintroduktion till Catch:
-
+// Kommentar:
+// Man kan direct returera "return os << t.to_string()". 
+  
+*/
 
 TEST_CASE ("Constructors and getters") {
    SECTION("Default constructor") {
@@ -50,6 +51,9 @@ TEST_CASE ("Constructors and getters") {
       CHECK_THROWS( Time{13,35,60} );
       CHECK_THROWS( Time{13,60,35} );
       CHECK_THROWS( Time{24,35,35} );
+      CHECK_THROWS( Time{23,0,-1} );
+      CHECK_THROWS( Time{23,-5,0} );
+      CHECK_THROWS( Time{-55,55,0} );
              
       CHECK( t0.get_hour()   == 0 );
       CHECK( t0.get_minute() == 0 );
@@ -70,6 +74,13 @@ TEST_CASE ("Constructors and getters") {
       CHECK_THROWS( Time{"13:35:60"} );
       CHECK_THROWS( Time{"13:60:35"} );
       CHECK_THROWS( Time{"24:35:35"} );
+      CHECK_THROWS( Time{"fdasfdsafdsa"} );
+      CHECK_THROWS( Time{"23:11:aa"} );
+      CHECK_THROWS( Time{"23:bb:11"} );
+      CHECK_THROWS( Time{"aa:55:22"} );
+      CHECK_THROWS( Time{"321321321321321"} );
+      CHECK_THROWS( Time{"22:55:4a"} );
+      CHECK_THROWS( Time{"22:55:22:::"} );
 
       CHECK( t0.get_hour()   == 0 );
       CHECK( t0.get_minute() == 0 );
@@ -121,8 +132,12 @@ TEST_CASE ("to_string") {
    }
    
    SECTION("24 hour format with argument") {
-      Time t0{12,0,0};
-      CHECK( t0.to_string(false) == "12:00:00" );
+      Time t0{5,0,0};
+      Time t1{12,0,0};
+      Time t2{20,0,0};
+      CHECK( t0.to_string(false) == "05:00:00" );
+      CHECK( t1.to_string(false) == "12:00:00" );
+      CHECK( t2.to_string(false) == "20:00:00" );
    } 
 
    SECTION("12 hour format") {
@@ -137,6 +152,8 @@ TEST_CASE ("to_string") {
       Time t8{13,0,0};
       Time t9{23,0,0};
       Time t10{23,59,59};
+      Time t11{"23:59:59"};
+
 
       CHECK( t0.to_string(true) == "12:00:00am" );
       CHECK( t1.to_string(true) == "12:00:00am" );
@@ -149,6 +166,7 @@ TEST_CASE ("to_string") {
       CHECK( t8.to_string(true) == "01:00:00pm" );
       CHECK( t9.to_string(true) == "11:00:00pm" );
       CHECK( t10.to_string(true) == "11:59:59pm" );
+      CHECK( t11.to_string(true) == "11:59:59pm" );
    }
 }
 
@@ -158,6 +176,9 @@ TEST_CASE ("CPP standard operators") {
       Time t1{12,0,59};
       Time t2{12,59,59};
       Time t3{23,59,59};
+
+      CHECK(t3 + 1 == 1 + t3);
+      CHECK(t3 + 999 == 999 + t3);
 
       CHECK( (t0 + 1).get_second() == 1 );
       CHECK( (t0 + 1).get_minute() == 0 );
@@ -174,6 +195,12 @@ TEST_CASE ("CPP standard operators") {
       CHECK( (t3 + 1).get_second() == 0);
       CHECK( (t3 + 1).get_minute() == 0);
       CHECK( (t3 + 1).get_hour() == 0);
+
+      // TODO plus och minus med höga tal
+      // CHECK( (t0 + 180000).get_second() == 0);
+      // CHECK( (t0 + 180000).get_minute() == 0);
+      // CHECK( (t0 + 180000).get_hour() == 2);
+
    }
 
    SECTION("Subtraction") {
@@ -204,19 +231,35 @@ TEST_CASE ("CPP standard operators") {
 
    SECTION("Post increment") {
       Time t0{};
+      Time t1{20,59,59};
+      Time t2{22,50,59};
+      Time t3{23,59,59};
 
       CHECK( t0++.to_string() == "00:00:00");
       CHECK( t0.to_string() == "00:00:01");
+      CHECK( t1++.to_string() == "20:59:59");
+      CHECK( t1.to_string() == "21:00:00");
+      CHECK( t2++.to_string() == "22:50:59");
+      CHECK( t2.to_string() == "22:51:00");
+      CHECK( t3++.to_string() == "23:59:59");
+      CHECK( t3.to_string() == "00:00:00");
    }
 
    SECTION("Pre increment") {
       Time t0{};
+      Time t1{21,50,59};
+      Time t2{23,59,59};
 
       CHECK( (++t0).to_string() == "00:00:01");
       CHECK( t0.to_string() == "00:00:01");
+      CHECK( (++t1).to_string() ==  "21:51:00");
+      CHECK( t1.to_string() == "21:51:00");
+      CHECK( (++t2).to_string() ==  "00:00:00");
+      CHECK( t2.to_string() == "00:00:00");
    }
 
    SECTION("Post decrement") {
+      // TODO copy paste som bs
       Time t0{};
 
       CHECK( t0--.to_string() == "00:00:00");
@@ -350,10 +393,43 @@ TEST_CASE("IO") {
          CHECK(ss.failbit);
          CHECK(t == Time{}); // default;
       }
+
+      {
+         std::string s{"a1:55:55"};
+         std::stringstream ss{s};
+         Time t{};
+         ss >> t;
+         CHECK(ss.failbit);
+         CHECK(t == Time{}); // default;
+      }
+
+      {
+         std::string s{"21:bb:55"};
+         std::stringstream ss{s};
+         Time t{};
+         ss >> t;
+         CHECK(ss.failbit);
+         CHECK(t == Time{}); // default;
+      }
+
+      {
+         std::string s{"21:55:"};
+         std::stringstream ss{s};
+         Time t{};
+         ss >> t;
+         CHECK(ss.failbit);
+         CHECK(t == Time{}); // default;
+      }
+
+      {
+         std::string s{"21::22"};
+         std::stringstream ss{s};
+         Time t{};
+         ss >> t;
+         CHECK(ss.failbit);
+         CHECK(t == Time{}); // default;
+      }
    }
 }
-
-
-// Fill with more tests of other functions and operators!
 
 
