@@ -1,5 +1,3 @@
-#include "node.h"
-#include "iterator.h"
 #include <initializer_list>
 #include <optional>
 
@@ -7,6 +5,8 @@
 #define LIST_H
 
 class List {
+    class Iterator;
+
 public:
     List(); //empty
     List(std::initializer_list<int> const& list); // n
@@ -19,19 +19,43 @@ public:
 
     void insert(int const& num);
     void remove(int const& index);
-    std::optional<int> get(int const& index);
+    std::optional<int> get(int const index) const;
     void clear();
     bool is_empty() const;
 
-    Node* get_first() const;
-    Node* get_last() const;
+    std::optional<int> get_first() const;
+    std::optional<int> get_last() const;
     int get_size() const;
 
-    // iterator
-    Iterator begin() cons
+    Iterator begin() const;
     Iterator end() const;
 
 private:
+    class Node {
+    public:
+        Node(int const& num);
+
+        Node* next;
+        Node* prev;
+        int data;
+    };
+
+    class Iterator {
+    public:
+        Iterator(); 
+        Iterator(Node* ptr);
+
+        bool operator!=(const Iterator& itr) const;
+        int operator*() const;
+
+        Iterator& operator++();
+        Iterator operator++(int);
+
+        Node* ptr;
+    }; 
+
+
+
     Node* first;
     Node* last;
     int size;

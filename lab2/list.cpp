@@ -5,6 +5,8 @@
 
 using namespace std;
 
+List::Node::Node(int const& num) : next{nullptr}, prev{nullptr}, data{num} {}
+
 List::List() : first{nullptr}, last{nullptr}, size{0} {}
 
 List::List(initializer_list<int> const& l) : first(), last(), size() {
@@ -18,24 +20,24 @@ List::List(initializer_list<int> const& l) : first(), last(), size() {
 }
 
 List::List(List &&l) : List() {
-    swap(l.first, this->first);
-    swap(l.last, this->last);
+    *this = move(l);
 }
 
 List::List(List const& l) : List() {
-    Node* node = l.get_first();
+    Node* node = l.first;
     while(node) {
-        this->insert(node->get_data());
+        this->insert(node->data);
         node = node->next;
     }
 }
 
+
 List& List::operator=(List const &l)
 {   
     clear();
-    Node* node = l.get_first();
+    Node* node = l.first;
     while(node) {
-        this->insert(node->get_data());
+        this->insert(node->data);
         node = node->next;
     }
     return *this;
@@ -45,6 +47,7 @@ List& List::operator=(List &&l)
 {
     swap(l.first, this->first);
     swap(l.last, this->last);
+    swap(l.size, this->size);
     return *this;
 }
 
@@ -53,12 +56,20 @@ List::~List() {
     clear();
 }
 
-Node* List::get_first() const {
-    return this->first;
+optional<int> List::get_first() const {
+    if(this->first) {
+        return this->first->data;
+    } else {
+        return {};
+    }
 }
 
-Node* List::get_last() const {
-    return this->last;
+optional<int> List::get_last() const {
+    if(this->last) {
+        return this->last->data;
+    } else {
+        return {};
+    }
 }
 
 int List::get_size() const {
@@ -73,6 +84,7 @@ void List::clear() {
         this->first = curr;
     }
     this->last = nullptr;
+    this->size = 0;
 }
 
 bool List::is_empty() const {
@@ -88,14 +100,14 @@ void List::insert(int const& num) {
         this->last = this->first;
     }
   
-    else if (this->first->get_data() >= new_node->get_data()) {
+    else if (this->first->data >= new_node->data) {
         new_node->next = this->first;
         new_node->next->prev = new_node;
         this->first = new_node;
     }
 
     // performance boost for push_back
-    else if (this->last->get_data() <= new_node->get_data()) {
+    else if (this->last->data <= new_node->data) {
         new_node->prev = this->last;
         this->last->next = new_node;
         this->last = new_node;
@@ -105,7 +117,7 @@ void List::insert(int const& num) {
         curr = this->first;
   
         while (curr->next && 
-               curr->next->get_data() < new_node->get_data()) {
+               curr->next->data < new_node->data) {
             curr = curr->next;
         }
   
@@ -158,19 +170,19 @@ void List::remove(int const& index) {
     this->size--;
 }
 
-optional<int> List::get(int const& index) {
+optional<int> List::get(int const index) const {
     if(this->is_empty()) {
         return {};
     }
     if(this->size - 1 == index) {
-        return this->last->get_data();
+        return this->last->data;
     }
     Node* temp{this->first};
 
     int step{0};
     while(temp) {
         if(step == index) {
-            return temp->get_data();
+            return temp->data;
         } else {
             temp = temp->next;
             step++;
@@ -183,23 +195,44 @@ optional<int> List::get(int const& index) {
 
 std::ostream& operator<<(std::ostream &os, List const &list)
 {
-    Node* temp{list.get_first()};
-    while(temp) {
-        os << temp->get_data();
-        temp = temp->next;
-        if(temp) {
+    for (int i = 0; i < list.get_size(); i++)
+    {
+        os << list.get(i).value();
+        if (i + 1 != list.get_size()) {
             os << " ";
         }
-    } 
-    return os;
+    }
+  return os;
+}
+
+List::Iterator::Iterator() : ptr(nullptr) {} 
+List::Iterator::Iterator(Node* ptr) : ptr(ptr) {}
+
+bool List::Iterator::operator!=(const Iterator& itr) const {
+  return ptr != itr.ptr;
+} 
+
+int List::Iterator::operator*() const {
+  return ptr->data;
+}
+
+List::Iterator& List::Iterator::operator++() {
+  ptr = ptr->next;
+  return *this;
+}
+
+List::Iterator List::Iterator::operator++(int) {
+  Iterator temp = *this;
+  operator++();
+  return temp;
 }
 
 
-// iterator 
-Iterator List::begin() const {
+
+List::Iterator List::begin() const {
     return Iterator(this->first);
 }
 
-Iterator List::end() const {
+List::Iterator List::end() const {
     return Iterator(nullptr);
 }

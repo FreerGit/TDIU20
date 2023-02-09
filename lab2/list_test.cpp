@@ -8,21 +8,20 @@ using namespace std;
 TEST_CASE ("Constructors") {
     SECTION("Default construtor") {
         List empty{};
-        CHECK(empty.get_first() == nullptr);
-        CHECK(empty.get_last() == nullptr);
+        CHECK_FALSE(empty.get_first());
+        CHECK_FALSE(empty.get_last());
     }
 
     SECTION("Constructor with one arg") {
         List one{5};
-        CHECK(one.get_first()->get_data() == 5);
-        CHECK(one.get_last()->get_data() == 5);
+        CHECK(one.get_first().value() == 5);
+        CHECK(one.get_last().value() == 5);
     }
 
     SECTION("Construtor with n args") {
         List mult{1,2,3,4,5,6};
-        CHECK(mult.get_first()->get_data() == 1);
-        CHECK(mult.get_last()->get_data() == 6);
-        CHECK(mult.get_first()->next->next->get_data() == 3);
+        CHECK(mult.get_first().value() == 1);
+        CHECK(mult.get_last().value() == 6);
         CHECK(mult.get_size() == 6);
     }
 
@@ -56,13 +55,13 @@ TEST_CASE("Public functions") {
     SECTION("get_first") {
         List many{1,2,3};
         
-        CHECK(many.get_first()->get_data() == 1);
+        CHECK(many.get_first().value() == 1);
     }
 
     SECTION("get_last") {
         List many{1,2,3};
 
-        CHECK(many.get_last()->get_data() == 3);
+        CHECK(many.get_last().value() == 3);
     }
 
     SECTION("get_size") {
@@ -98,8 +97,8 @@ TEST_CASE("Public functions") {
             empty.insert(4);
 
             CHECK(empty.get_size() == 4);
-            CHECK(empty.get_first()->get_data() == 1);
-            CHECK(empty.get_last()->get_data() == 4);
+            CHECK(empty.get_first().value() == 1);
+            CHECK(empty.get_last().value() == 4);
         }
 
         {
@@ -110,8 +109,8 @@ TEST_CASE("Public functions") {
             empty.insert(1);
 
             CHECK(empty.get_size() == 4);
-            CHECK(empty.get_first()->get_data() == 1);
-            CHECK(empty.get_last()->get_data() == 4);
+            CHECK(empty.get_first().value() == 1);
+            CHECK(empty.get_last().value() == 4);
         }
         
         {
@@ -123,8 +122,8 @@ TEST_CASE("Public functions") {
             empty.insert(1);
 
             CHECK(empty.get_size() == 5);
-            CHECK(empty.get_first()->get_data() == 1);
-            CHECK(empty.get_last()->get_data() == 9);
+            CHECK(empty.get_first().value() == 1);
+            CHECK(empty.get_last().value()== 9);
         }
 
         {
@@ -139,8 +138,8 @@ TEST_CASE("Public functions") {
             empty.insert(1);
 
             CHECK(empty.get_size() == 8);
-            CHECK(empty.get_first()->get_data() == 1);
-            CHECK(empty.get_last()->get_data() == 9);
+            CHECK(empty.get_first().value() == 1);
+            CHECK(empty.get_last().value() == 9);
         }
     }
 
@@ -178,8 +177,8 @@ TEST_CASE("Public functions") {
             l.remove(2);
 
             CHECK(l.get_size() == 2);
-            CHECK(l.get_first()->get_data() == 1);
-            CHECK(l.get_last()->get_data() == 2);
+            CHECK(l.get_first().value() == 1);
+            CHECK(l.get_last().value() == 2);
         }
         {
             stringstream ss;
@@ -192,8 +191,8 @@ TEST_CASE("Public functions") {
             ss << l;
             CHECK(ss.str() == "1 2 3 5 7 8 9");
             CHECK(l.get_size() == 7);
-            CHECK(l.get_first()->get_data() == 1);
-            CHECK(l.get_last()->get_data() == 9);
+            CHECK(l.get_first().value() == 1);
+            CHECK(l.get_last() == 9);
         }
     }
 }
