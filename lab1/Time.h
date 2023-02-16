@@ -32,7 +32,8 @@ public:
 
 private:
     void check_clock_bounds(Time const* t) const;
-
+    std::string digit_helper(int const time_t) const;
+    
     int hour;
     int minute;
     int second;

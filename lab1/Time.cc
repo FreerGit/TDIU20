@@ -72,7 +72,7 @@ bool Time::is_am() const {
 }
 
 
-string digit_helper(int time_t) {
+string Time::digit_helper(int const time_t) const {
     return (time_t >= 10) ? std::to_string(time_t) : "0" + std::to_string(time_t);
 }
 
@@ -80,18 +80,17 @@ string Time::to_string(bool const format) const {
     string time_s {};
     int hour_temp{this->get_hour()};
 
-    // Maybe this if statement should  be nested or broken up, altough I think it's clear enough.    
     if(format && !this->is_am() && hour_temp != 12) {
         hour_temp -= 12;
     } else if (format && this->is_am() && hour_temp == 0) {
         hour_temp += 12;
     }
 
-    time_s += digit_helper(hour_temp);
+    time_s += this->digit_helper(hour_temp);
     time_s += ':';
-    time_s += digit_helper(this->get_minute());
+    time_s += this->digit_helper(this->get_minute());
     time_s += ':';
-    time_s += digit_helper(this->get_second());
+    time_s += this->digit_helper(this->get_second());
 
     if(format && this->is_am()) {
         time_s += "am";
@@ -103,54 +102,43 @@ string Time::to_string(bool const format) const {
 }
 
 Time Time::operator+(int const& rhs) const {
-    Time t{*this};
+    Time time{*this};
 
-
-    if(t.get_second() + rhs >= 60) {
-        if(t.get_minute() == 59) {
-            if(t.get_hour() == 23) {
-                t.second += rhs - 60;
-                t.minute = 0;
-                t.hour = 0;
-            } else {
-                t.second += rhs - 60;
-                t.minute = 0;
-                t.hour += 1;
+    for (int i{}; i < rhs; i++) {
+        time.second++;
+        if(time.second > 59) {
+            time.second = 0;
+            time.minute++;
+            if(time.minute > 59) {
+                time.minute = 0;
+                time.hour++;
+                if(time.hour > 23) {
+                    time.hour = 0;
+                }
             }
-        } else {
-            t.second += rhs - 60;
-            t.minute += 1;
         }
-    } else {
-        t.second += rhs;
     }
-    
-
-    return t;
+    return time;
 }
 
 Time Time::operator-(int const& rhs) const {
-    Time t{*this};
-    if(t.get_second() - rhs < 0) {
-        if(t.get_minute() == 0) {
-            if(t.get_hour() == 0) {
-                t.second += 60 - rhs;
-                t.minute = 59;
-                t.hour = 23;
-            } else {
-                t.second += 60 - rhs;
-                t.minute = 59;
-                t.hour -= 1;
-            }
-        } else {
-            t.second += 60 - rhs;
-            t.minute -= 1;
-        }
-    } else {
-        t.second -= rhs;
-    }
+    Time time{*this};
 
-    return t;
+    for (int i{}; i < rhs; i++) {
+        time.second--;
+        if(time.second < 0) {
+            time.second = 59;
+            time.minute--;
+            if(time.minute < 0) {
+                time.minute = 59;
+                time.hour--;
+                if(time.hour < 0) {
+                    time.hour = 23;
+                }
+            }
+        }
+    }
+    return time;
 }
 
 //post
