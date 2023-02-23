@@ -142,12 +142,14 @@ void List::insert(int const& num) {
 
 void List::remove(int const& index) {
     if(index == 0) {
+        Node* curr{this->first};
         this->first = this->first->next;
+        delete curr;
     } else if (index == this->size -1) {
         Node* curr{this->last};
         this->last = curr->prev;
         this->last->next = nullptr;
-        free(curr);
+        delete curr;
     } else {
 
         Node* curr = this->first;
@@ -233,10 +235,10 @@ List::Iterator List::Iterator::operator++(int) {
 
 
 
-List::Iterator List::begin() const {
+List::Iterator List::begin() {
     return Iterator(this->first);
 }
 
-List::Iterator List::end() const {
+List::Iterator List::end() {
     return Iterator(nullptr);
 }
