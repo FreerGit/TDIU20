@@ -14,7 +14,7 @@ public:
     List(List const& l); // Copy
     ~List(); //destructor
 
-    List &operator=(List &&l); // Move assignment
+    List &operator=(List &&l); // swap
     List &operator=(List const &l); // Copy assignment
 
     void insert(int const& num);
@@ -53,8 +53,6 @@ private:
 
         Node* ptr;
     }; 
-
-
 
     Node* first;
     Node* last;

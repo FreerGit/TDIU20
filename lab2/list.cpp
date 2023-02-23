@@ -34,20 +34,24 @@ List::List(List const& l) : List() {
 
 List& List::operator=(List const &l)
 {   
-    clear();
-    Node* node = l.first;
-    while(node) {
-        this->insert(node->data);
-        node = node->next;
+    if(this != &l) {
+        clear();
+        Node* node = l.first;
+        while(node) {
+            this->insert(node->data);
+            node = node->next;
+        }
     }
     return *this;
 }
 
 List& List::operator=(List &&l)
 {
-    swap(l.first, this->first);
-    swap(l.last, this->last);
-    swap(l.size, this->size);
+    if(this != &l) {
+        swap(l.first, this->first);
+        swap(l.last, this->last);
+        swap(l.size, this->size);
+    }
     return *this;
 }
 

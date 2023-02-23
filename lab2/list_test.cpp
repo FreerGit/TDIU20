@@ -198,6 +198,25 @@ TEST_CASE("Public functions") {
 }
 
 TEST_CASE("Operators") {
+    SECTION("Selfassignment") {
+        {
+            stringstream ss1;
+            List l1{1,2,3,4,5,6};
+
+            l1 = l1;
+            ss1 << l1;
+            CHECK(ss1.str() == "1 2 3 4 5 6");
+        }
+        {
+            stringstream ss1;
+            List l1{1,2,3,4,5,6};
+
+            l1 = move(l1);
+            ss1 << l1;
+            CHECK(ss1.str() == "1 2 3 4 5 6");
+        }
+    }
+
     SECTION("Move") {
         stringstream ss1;
         stringstream ss2;
