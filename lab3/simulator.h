@@ -14,7 +14,7 @@ public:
     double get_voltage() const;
     std::string get_name() const;
     virtual double get_current() const = 0;
-    virtual void calculate(double time) = 0;
+    virtual void calculate(double) = 0;
 
 
 protected: 
