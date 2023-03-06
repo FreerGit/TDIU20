@@ -53,6 +53,8 @@ private:
 };
 
 
-void simulate(std::vector<Component*> comps, int iterations, int rows, double time);
+void simulate(std::vector<Component*>& comps, int iterations, int rows, double time);
+
+void cleanup(std::vector<Component*>& comps);
 
 #endif

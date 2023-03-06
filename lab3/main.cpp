@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
             voltage = stoi(argv[4]);
         } catch (invalid_argument &e) {
             cerr << e.what() << endl;
-            exit(0);
+            return 1;
         }
 
         if (iterations <= 0 || rows <= 0 || time <= 0 || voltage <= 0) {
@@ -39,6 +39,7 @@ int main(int argc, char* argv[]) {
     nets1.push_back(new Resistor("R3", 8.0, d, b));
     nets1.push_back(new Resistor("R4", 12.0, c, b));
     simulate(nets1, iterations, rows, time);
+    cleanup(nets1);
 
     cout << endl << "Krets 2:" << endl;
     Connection p{}, n{}, l{}, r{};
@@ -49,6 +50,7 @@ int main(int argc, char* argv[]) {
     nets2.push_back(new Resistor("R4", 300.0, l, n));
     nets2.push_back(new Resistor("R5", 250.0, n, r));
     simulate(nets2, iterations, rows, time);
+    cleanup(nets2);
 
     cout << endl << "Krets 3:" << endl;
     Connection p2{}, n2{}, l2{}, r2{};
@@ -59,4 +61,7 @@ int main(int argc, char* argv[]) {
     nets3.push_back(new Resistor("R4", 300.0, l2, n2));
     nets3.push_back(new Condensator("C5", 0.75, n2, r2));
     simulate(nets3, iterations, rows, time);
+    cleanup(nets3);
+
+    return 0;
 }

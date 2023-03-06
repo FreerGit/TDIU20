@@ -70,7 +70,8 @@ void Condensator::calculate(double time) {
     }
 }
 
-void simulate(vector<Component*> comps, int iterations, int rows, double time) {
+//tekniskt sett går det att göra const& men eftersom vi gör ->caluclate() (mutation) känns det fel.
+void simulate(vector<Component*>& comps, int iterations, int rows, double time) {
     cout << " ";
     for(unsigned int i{0}; i < comps.size(); i++) {
         if(i == 0) {
@@ -99,6 +100,9 @@ void simulate(vector<Component*> comps, int iterations, int rows, double time) {
             cout << endl;
         }
     }
+}
+
+void cleanup(vector<Component*>& comps) {
     for(auto c : comps) {
         delete c;
     }
