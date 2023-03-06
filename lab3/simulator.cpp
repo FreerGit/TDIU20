@@ -26,10 +26,9 @@ double Battery::get_current() const {
     return 0.0;
 }
 
-void Battery::calculate(double time) {
-    double to_disable_param_unused_warning = time * 0.0;
+void Battery::calculate(double) {
     this->left = this->voltage;
-    this->right = to_disable_param_unused_warning;
+    this->right = 0.0;
 }
 
 Resistor::Resistor(std::string const& n, double res, Connection& l, Connection& r)
@@ -99,5 +98,8 @@ void simulate(vector<Component*> comps, int iterations, int rows, double time) {
             }
             cout << endl;
         }
+    }
+    for(auto c : comps) {
+        delete c;
     }
 }

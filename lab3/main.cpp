@@ -7,18 +7,24 @@ using namespace std;
 int main(int argc, char* argv[]) {
     int iterations, rows, voltage;
     double time;
-    if(argc < 5) {
-        cout << "Invalid inputs (.a.out iterations rows time volt" << endl;
-        return 1;
-    } else {
+    if(argc == 5) {
         try {
             iterations = stoi(argv[1]);
             rows = stoi(argv[2]);
             time = stod(argv[3]);
             voltage = stoi(argv[4]);
         } catch (invalid_argument &e) {
-            cout << e.what() << endl;
+            cerr << e.what() << endl;
+            exit(0);
         }
+
+        if (iterations <= 0 || rows <= 0 || time <= 0 || voltage <= 0) {
+            cerr << "Out of range" << endl;
+            return 1;
+        }
+    } else {
+        cerr << "Invalid inputs (./a.out iterations rows time volt)" << endl;
+        return 1;
     }
 
     Connection a{}, b{}, c{}, d{};
