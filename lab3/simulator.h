@@ -6,7 +6,6 @@
 
 using Connection = double;
 
-
 class Component {
 public:
     Component(std::string const& n, Connection& l, Connection& r);

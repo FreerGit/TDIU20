@@ -4,24 +4,6 @@
 #ifndef LIST_H
 #define LIST_H
 
-/*
-  Information om komplettering:
-  Eventuella siffrorna hänvisar till rättningsprotokollet som finns på: https://www.ida.liu.se/divisions/sas/groups/upp/info/lang/cpp/UPP_correct_guide.pdf
-
-  Kompletteringen kan gälla hela filen och alla filer i labben, så får ni komplettering på en sak, kan samma sak förekomma på fler ställen utan att jag skrivit det.
-
-  Komplettering lämnas in via sendlab efter senast en (1) vecka
-
-  Har ni frågor om kompletteringen kan ni maila mig på:
-  simon.ahrenstedt@liu.se
-*/
-
-/*
-
-  Komplettering: Ni testar inte att ni löst fallet med självtilldelning.
-
-*/
-
 
 class List {
     class Iterator;
@@ -33,7 +15,7 @@ public:
     List(List const& l); // Copy
     ~List(); //destructor
 
-    List &operator=(List &&l); // swap
+    List &operator=(List &&l); // move assignment
     List &operator=(List const &l); // Copy assignment
 
     void insert(int const& num);

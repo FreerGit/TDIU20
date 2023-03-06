@@ -72,6 +72,7 @@ void Condensator::calculate(double time) {
 }
 
 void simulate(vector<Component*> comps, int iterations, int rows, double time) {
+    cout << " ";
     for(unsigned int i{0}; i < comps.size(); i++) {
         if(i == 0) {
             cout << "        ";
@@ -82,12 +83,8 @@ void simulate(vector<Component*> comps, int iterations, int rows, double time) {
     }
     cout << endl;
 
-    cout << " ";
     for(unsigned int i{0}; i < comps.size(); i++) {
-        cout << "Volt" << "  " << "Curr";
-        if( i != comps.size() -1) {
-            cout << "  ";
-        }
+        cout << setw(6) << "Volt" << "  " << "Curr";
     }
     cout << endl;
 
@@ -98,7 +95,7 @@ void simulate(vector<Component*> comps, int iterations, int rows, double time) {
 
         if(i % (iterations/rows) == 0) {
             for(auto c : comps) {
-                cout << setprecision(2) << fixed << c->get_voltage() << "  " << c->get_current() << "  ";
+                cout << setw(6) <<  setprecision(2) << fixed << c->get_voltage() << setw(6) << c->get_current();
             }
             cout << endl;
         }
